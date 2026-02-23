@@ -40,5 +40,69 @@ public class PaymentValidatorTest {
     public void testPayPalPaymentValid() {
         assertTrue(paymentValidator.isPaymentMethodValid("paypal"));
     }
+   @Test
+   public void testPayPalPaymentValidUppercase() {
+       assertTrue(paymentValidator.isPaymentMethodValid("PAYPAL"));
+   }
+
+
+   @Test
+   public void testPayPalPaymentValidMixedCase() {
+       assertTrue(paymentValidator.isPaymentMethodValid("PayPal"));
+   }
+
+
+   @Test
+   public void testCryptoPaymentInvalid() {
+       assertFalse(paymentValidator.isPaymentMethodValid("crypto"));
+   }
+
+
+   @Test
+   public void testCryptoPaymentInvalidUppercase() {
+       assertFalse(paymentValidator.isPaymentMethodValid("CRYPTO"));
+   }
+
+
+   @Test
+   public void testCryptoPaymentInvalidMixedCase() {
+       assertFalse(paymentValidator.isPaymentMethodValid("CrYpTo"));
+   }
+
+
+   @Test
+   public void testUnknownPaymentMethodThrowsException() {
+       assertThrows(UnsupportedOperationException.class,
+           () -> paymentValidator.isPaymentMethodValid("bitcoin"),
+           "Unknown payment method should throw UnsupportedOperationException");
+   }
+
+
+   @Test
+   public void testEmptyStringPaymentMethodThrowsException() {
+       assertThrows(UnsupportedOperationException.class,
+           () -> paymentValidator.isPaymentMethodValid(""));
+   }
+
+
+   @Test
+   public void testRandomUnknownMethodThrowsException() {
+       assertThrows(UnsupportedOperationException.class,
+           () -> paymentValidator.isPaymentMethodValid("venmo"));
+   }
+
+
+   @ParameterizedTest
+   @ValueSource(strings = {"card", "paypal"})
+   public void testValidPaymentMethods(String method) {
+       assertTrue(paymentValidator.isPaymentMethodValid(method));
+   }
+
+
+   @ParameterizedTest
+   @ValueSource(strings = {"crypto", "CRYPTO"})
+   public void testInvalidPaymentMethods(String method) {
+       assertFalse(paymentValidator.isPaymentMethodValid(method));
+   }
 
 }
